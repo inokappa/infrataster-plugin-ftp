@@ -1,8 +1,6 @@
 # Infrataster::Plugin::Ftp
 [![Build Status](https://travis-ci.org/inokappa/infrataster-plugin-ftp.svg?branch=master)](https://travis-ci.org/inokappa/infrataster-plugin-ftp)
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/infrataster/plugin/ftp`. To experiment with that code, run `bin/console` for an interactive prompt.
-
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -21,14 +19,45 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+require 'spec_helper'
 
-## Development
+describe server(:ftp_server) do
+  describe ftp('welcome') do
+    it 'check accessible' do
+      expect(result.chomp).to eq('230 Login successful.')
+    end
+  end
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+  describe ftp('pwd') do
+    it 'check `chroot` enabled' do
+      expect(result).to eq('/')
+    end
+  end
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+  describe ftp('mkdir test_dir') do
+    it 'run `mkdir`' do
+      expect(result).to include '/test_dir'
+    end
+  end
 
+  describe ftp('ls') do
+    it 'run ls' do
+      expect(result).to include 'sample.txt'
+    end
+  end
+end
+```
+
+You can specify `server.address`, username, password by options passed to Infrataster::Server.define:
+
+```ruby
+Infrataster::Server.define(
+  :ftp_server,
+  '192.168.0.6',
+  ftp: { user: 'ftpuser', pass: 'supersecret', passive: true },
+)
+```
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/infrataster-plugin-ftp.
