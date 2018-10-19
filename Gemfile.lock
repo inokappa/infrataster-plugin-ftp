@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    infrataster-plugin-ftp (0.0.2)
+    infrataster-plugin-ftp (0.0.3)
       infrataster
 
 GEM
