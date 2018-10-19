@@ -10,20 +10,18 @@ module Infrataster
           options = options.merge(server.options[:ftp])
         end
 
-        # resource.ftp = Net::FTP.open(options[:host]) do |ftp|
-        #   ftp.passive = options[:passive]
-        #   ftp.login(options[:user], options[:pass])
-        # end
-
-        resource.ftp = Net::FTP.open(options[:host],
+        resource.ftp = Net::FTP.open(server.address,
                                      user = options[:user],
                                      pass = options[:pass],
                                      acct = nil)
         command = resource.command
 
+        response = ''
         if resource.ftp.respond_to?(command)
-          resource.ftp.method(command).call
+          response = resource.ftp.method(command).call
+          resource.ftp.method('close').call
         end
+        response
       end
     end
   end
